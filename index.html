@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RESPIRA — Sistem Skrining & Pemantauan ISPA Pascabencana</title>
+<meta name="description" content="RESPIRA - Sistem Skrining & Pemantauan ISPA Pascabencana. Skrining mandiri, dashboard, data pengungsi, konsultasi, dan edukasi.">
+<meta name="theme-color" content="#2E7D32">
+<meta name="color-scheme" content="light">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RESPIRA">
+<meta name="format-detection" content="telephone=yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E7D32' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M12 3v10'/%3E%3Cpath d='M8.5 13c0 4-1.5 7-3.5 7s-3-2-3-5c0-3 1-6 3-8'/%3E%3Cpath d='M15.5 13c0 4 1.5 7 3.5 7s3-2 3-5c0-3-1-6-3-8'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232E7D32' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M12 3v10'/%3E%3Cpath d='M8.5 13c0 4-1.5 7-3.5 7s-3-2-3-5c0-3 1-6 3-8'/%3E%3Cpath d='M15.5 13c0 4 1.5 7 3.5 7s3-2 3-5c0-3-1-6-3-8'/%3E%3C/svg%3E">
+<style>
+:root{
+  --hijau:#2E7D32; --hijau-tua:#1B5E20; --hijau-muda:#E8F5E9;
+  --biru:#1565C0; --biru-muda:#E3F2FD;
+  --oranye:#FF9800; --oranye-muda:#FFF3E0;
+  --merah:#D32F2F; --merah-muda:#FFEBEE;
+  --tinta:#12241C; --abu:#5C6B64; --garis:#DCE7E1;
+  --putih:#fff;
+  --r:14px;
+  --shadow:0 2px 4px rgba(18,36,28,.04),0 8px 24px rgba(18,36,28,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',system-ui,sans-serif;
+  color:var(--tinta);background:#F7FBF8;
+  background-image:radial-gradient(1100px 600px at 80% -10%,#E3F2FD 0%,transparent 60%),
+                   radial-gradient(900px 500px at -10% 10%,#E8F5E9 0%,transparent 55%);
+  background-attachment:fixed;
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+
+/* ===== NAV ===== */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--garis)}
+.nav{display:flex;align-items:center;gap:16px;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;color:var(--hijau-tua);text-decoration:none}
+.brand svg{flex:none}
+.menu{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap}
+.menu button{
+  font:inherit;font-size:.86rem;font-weight:600;color:var(--abu);background:none;border:0;
+  padding:8px 12px;border-radius:99px;cursor:pointer;transition:.15s;
+}
+.menu button:hover{background:var(--hijau-muda);color:var(--hijau-tua)}
+.menu button.on{background:var(--hijau);color:#fff}
+.burger{display:none;margin-left:auto;background:none;border:1px solid var(--garis);border-radius:10px;padding:8px 10px;cursor:pointer}
+
+/* ===== UMUM ===== */
+.page{display:none;padding:44px 0 70px;animation:fade .35s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.eyebrow{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--biru)}
+h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:10px 0 14px}
+h2{font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.025em;font-weight:800;margin:0 0 8px}
+h3{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin:0 0 6px}
+p.lead{font-size:1.05rem;color:var(--abu);max-width:62ch}
+.muted{color:var(--abu);font-size:.92rem}
+.sec{margin-top:44px}
+.card{background:var(--putih);border:1px solid var(--garis);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.btn{
+  font:inherit;font-weight:700;font-size:.95rem;border:0;border-radius:99px;padding:13px 24px;
+  cursor:pointer;background:var(--hijau);color:#fff;transition:.18s;display:inline-flex;align-items:center;gap:8px
+}
+.btn:hover{background:var(--hijau-tua);transform:translateY(-1px)}
+.btn.biru{background:var(--biru)}.btn.biru:hover{background:#0D47A1}
+.btn.ghost{background:#fff;color:var(--hijau-tua);border:1.5px solid var(--garis)}
+.btn.ghost:hover{background:var(--hijau-muda)}
+.btn.kecil{padding:9px 16px;font-size:.85rem}
+.btn:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--biru);outline-offset:2px}
+
+
+/* ===== GAME ===== */
+.lintasan{position:relative;background:linear-gradient(180deg,#E3F2FD,#E8F5E9);border:1px solid var(--garis);border-radius:var(--r);padding:22px 18px 16px;overflow:hidden}
+.jalur{position:relative;height:72px;margin-top:8px}
+.rel{position:absolute;left:0;right:0;top:52px;height:6px;border-radius:99px;background:repeating-linear-gradient(90deg,#BFD8C6 0 14px,transparent 14px 26px)}
+.pos{position:absolute;top:34px;transform:translateX(-50%);text-align:center;font-size:1.15rem;filter:grayscale(1);opacity:.45;transition:.3s}
+.pos.lewat{filter:none;opacity:1}
+.pos.akhir{font-size:1.4rem}
+.pos small{display:block;font-size:.6rem;color:var(--abu);font-weight:700}
+.pelari{position:absolute;top:6px;font-size:1.8rem;transform:translateX(-50%);transition:left .7s cubic-bezier(.35,1.4,.5,1)}
+.pelari.lari{animation:lompat .35s ease 2}
+@keyframes lompat{50%{transform:translateX(-50%) translateY(-12px)}}
+.opsi{display:grid;gap:10px;margin-top:14px}
+.opsi button{font:inherit;font-weight:600;text-align:left;background:#fff;border:1.5px solid var(--garis);border-radius:12px;padding:13px 16px;cursor:pointer;transition:.15s}
+.opsi button:hover{border-color:var(--hijau);background:var(--hijau-muda)}
+.opsi button.benar{border-color:var(--hijau);background:var(--hijau-muda)}
+.opsi button.salah{border-color:var(--merah);background:var(--merah-muda)}
+.opsi button:disabled{cursor:default}
+.skorbar{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:.85rem;font-weight:700;color:var(--abu)}
+.nyawa{letter-spacing:2px;font-size:1rem}
+@media (prefers-reduced-motion:reduce){.pelari{transition:none}.pelari.lari{animation:none}}
+
+/* ===== HERO ===== */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.hero-art{
+  position:relative;border-radius:24px;padding:26px;color:#fff;
+  background:linear-gradient(150deg,var(--hijau-tua),var(--hijau) 45%,var(--biru));
+  box-shadow:0 20px 50px rgba(21,101,192,.22)
+}
+.hero-art .tenda{display:block;margin:6px auto 14px}
+.hero-art h3{font-size:1.15rem;margin-bottom:2px}
+.posko-tag{font-size:.85rem;opacity:.9}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.mini div{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:10px 12px}
+.mini b{display:block;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:1.5rem;line-height:1.2}
+.mini span{font-size:.72rem;opacity:.9;text-transform:uppercase;letter-spacing:.08em}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+
+/* ===== STATISTIK ===== */
+.stat{background:#fff;border:1px solid var(--garis);border-left:5px solid var(--hijau);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.stat.b{border-left-color:var(--biru)}.stat.o{border-left-color:var(--oranye)}.stat.m{border-left-color:var(--merah)}
+.stat .num{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:2.1rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.stat .lbl{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--abu);margin-top:4px}
+.stat .sub{font-size:.8rem;color:var(--abu);margin-top:6px}
+
+/* ===== FORM ===== */
+label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px}
+input,select,textarea{
+  font:inherit;width:100%;padding:11px 13px;border:1.5px solid var(--garis);border-radius:10px;background:#fff;color:var(--tinta)
+}
+textarea{resize:vertical;min-height:96px}
+.field{margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;width:0;height:0}
+.chip span{
+  display:inline-block;padding:9px 15px;border:1.5px solid var(--garis);border-radius:99px;
+  font-size:.88rem;font-weight:600;cursor:pointer;background:#fff;transition:.15s;user-select:none
+}
+.chip input:checked+span{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.chip input:focus-visible+span{outline:3px solid var(--biru);outline-offset:2px}
+
+/* ===== BADGE RISIKO ===== */
+.badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:.76rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.b-rendah{background:var(--hijau-muda);color:var(--hijau-tua)}
+.b-sedang{background:var(--oranye-muda);color:#E65100}
+.b-tinggi{background:var(--merah-muda);color:var(--merah)}
+
+/* ===== TABEL ===== */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--garis);border-radius:var(--r);background:#fff}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:620px}
+th{text-align:left;padding:12px 14px;background:#F3F8F4;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--abu);border-bottom:1px solid var(--garis)}
+td{padding:12px 14px;border-bottom:1px solid #EDF3EF}
+tr:last-child td{border-bottom:0}
+
+/* ===== GRAFIK ===== */
+.bars{display:flex;align-items:flex-end;gap:8px;height:170px;padding-top:10px}
+.bars .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.bars .bar{width:100%;max-width:44px;background:linear-gradient(180deg,var(--biru),#42A5F5);border-radius:6px 6px 0 0;min-height:3px;transition:height .5s ease}
+.bars .cap{font-size:.7rem;color:var(--abu);white-space:nowrap}
+.bars .val{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:.75rem;font-weight:700}
+.donut-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:9px;font-size:.88rem}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:8px}
+.meter{height:10px;background:#EDF3EF;border-radius:99px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;border-radius:99px}
+
+/* ===== CHAT ===== */
+.thread{border:1px solid var(--garis);border-radius:var(--r);background:#fff;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.thread-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.who{font-weight:700;font-size:.95rem}
+.bubble{padding:12px 15px;border-radius:12px;margin-top:9px;font-size:.93rem}
+.bubble.tanya{background:var(--biru-muda);border-left:3px solid var(--biru)}
+.bubble.jawab{background:var(--hijau-muda);border-left:3px solid var(--hijau)}
+.bubble .meta{font-size:.74rem;color:var(--abu);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.pill{font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:99px;background:var(--oranye-muda);color:#E65100;text-transform:uppercase;letter-spacing:.05em}
+.pill.done{background:var(--hijau-muda);color:var(--hijau-tua)}
+.reply-box{margin-top:12px;display:none}
+.reply-box.on{display:block}
+
+/* ===== HASIL ===== */
+.hasil{border-radius:var(--r);padding:24px;color:#fff;margin-bottom:18px}
+.hasil.rendah{background:linear-gradient(135deg,var(--hijau-tua),var(--hijau))}
+.hasil.sedang{background:linear-gradient(135deg,#EF6C00,var(--oranye))}
+.hasil.tinggi{background:linear-gradient(135deg,#B71C1C,var(--merah))}
+.hasil .kat{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+ul.tips{margin:8px 0 0 18px}
+ul.tips li{margin-bottom:5px}
+
+.alert{padding:12px 16px;border-radius:10px;font-size:.9rem;font-weight:600;margin-bottom:14px}
+.alert.ok{background:var(--hijau-muda);color:var(--hijau-tua)}
+.alert.warn{background:var(--oranye-muda);color:#E65100}
+.alert.err{background:var(--merah-muda);color:var(--merah)}
+.note{font-size:.82rem;color:var(--abu);background:#F3F8F4;border:1px dashed var(--garis);border-radius:10px;padding:10px 13px}
+
+footer{background:var(--hijau-tua);color:#fff;padding:38px 0 26px;margin-top:40px}
+footer a{color:#C8E6C9}
+.foot{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:26px}
+.foot h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;opacity:.75;margin-bottom:10px}
+.foot p,.foot li{font-size:.9rem;opacity:.92;list-style:none;margin-bottom:6px}
+.copy{border-top:1px solid rgba(255,255,255,.18);margin-top:24px;padding-top:16px;font-size:.82rem;opacity:.75}
+
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3,.g2,.foot{grid-template-columns:1fr}
+  .menu{display:none;position:absolute;top:66px;left:0;right:0;background:#fff;flex-direction:column;padding:10px;border-bottom:1px solid var(--garis);box-shadow:var(--shadow)}
+  .menu.open{display:flex}
+  .menu button{text-align:left;width:100%}
+  .burger{display:block}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+
+/* ===== PENYESUAIAN LAYAR HP (Android & iOS) ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden;overscroll-behavior-y:none}
+img,svg,canvas,video{max-width:100%;height:auto}
+button,a,input,select,textarea{-webkit-tap-highlight-color:rgba(46,125,50,.15)}
+input,select,textarea{font-size:16px}          /* cegah auto-zoom di iOS */
+table{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+header{padding-top:env(safe-area-inset-top)}
+.wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+footer{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+@media (max-width:600px){
+  .g4{grid-template-columns:1fr}
+  .btn,.menu button,.burger{min-height:44px}   /* target sentuh nyaman */
+  .page{padding:28px 0 56px}
+  .card{padding:18px}
+}
+@media (display-mode:standalone){header{padding-top:calc(env(safe-area-inset-top) + 6px)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#" onclick="go('beranda');return false">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="M8.5 13c0 4-1.5 7-3.5 7s-3-2-3-5c0-3 1-6 3-8"/><path d="M15.5 13c0 4 1.5 7 3.5 7s3-2 3-5c0-3-1-6-3-8"/></svg>
+      RESPIRA
+    </a>
+    <button class="burger" onclick="document.getElementById('menu').classList.toggle('open')" aria-label="Buka menu">☰</button>
+    <nav class="menu" id="menu">
+      <button data-p="beranda" class="on" onclick="go('beranda')">Beranda</button>
+      <button data-p="tentang" onclick="go('tentang')">Tentang</button>
+      <button data-p="cara" onclick="go('cara')">Cara Kerja</button>
+      <button data-p="skrining" onclick="go('skrining')">Skrining ISPA</button>
+      <button data-p="dashboard" onclick="go('dashboard')">Dashboard</button>
+      <button data-p="pengungsi" onclick="go('pengungsi')">Data Pengungsi</button>
+      <button data-p="chat" onclick="go('chat')">Konsultasi</button>
+      <button data-p="edukasi" onclick="go('edukasi')">Edukasi</button>
+      <button data-p="game" onclick="go('game')">Game</button>
+      <button data-p="kontak" onclick="go('kontak')">Kontak</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= BERANDA ================= -->
+<section class="page on" id="p-beranda">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Sistem skrining &amp; pemantauan ISPA pascagempa</span>
+      <h1>Deteksi dini ISPA di posko pengungsian, sebelum kasusnya menumpuk.</h1>
+      <p class="lead">RESPIRA menggabungkan skrining gejala, prediksi tingkat risiko, pemantauan kasus secara langsung, dan konsultasi jarak jauh dalam satu platform — untuk pengungsi maupun petugas kesehatan.</p>
+      <div class="cta-row">
+        <button class="btn" onclick="go('skrining')">Mulai skrining</button>
+        <button class="btn biru" onclick="go('dashboard')">Buka dashboard</button>
+        <button class="btn ghost" onclick="go('chat')">Tanya tenaga kesehatan</button>
+      </div>
+    </div>
+    <div class="hero-art">
+      <svg class="tenda" width="120" height="86" viewBox="0 0 120 86" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M60 8 L108 74 H12 Z" fill="rgba(255,255,255,.12)"/>
+        <path d="M60 8 V74"/><path d="M60 44 L38 74"/><path d="M60 44 L82 74"/>
+        <path d="M54 30h12M60 24v12" stroke="#FF9800" stroke-width="3"/>
+      </svg>
+      <h3>Ringkasan posko</h3>
+      <div class="posko-tag" id="heroPosko">Seluruh lokasi pemantauan</div>
+      <div class="mini">
+        <div><b id="hPengungsi">0</b><span>Pengungsi</span></div>
+        <div><b id="hKasus">0</b><span>Kasus ISPA</span></div>
+        <div><b id="hTinggi">0</b><span>Risiko tinggi</span></div>
+      </div>
+      <p class="muted" style="color:rgba(255,255,255,.85);font-size:.8rem;margin-top:14px">Angka diperbarui otomatis setiap kali data pengungsi ditambah atau ada skrining baru masuk.</p>
+    </div>
+  </div>
+
+  <div class="sec grid g4">
+    <div class="stat"><div class="num" id="sPengungsi">0</div><div class="lbl">Total pengungsi</div><div class="sub" id="sPoskoCount">0 lokasi terpantau</div></div>
+    <div class="stat b"><div class="num" id="sKasus">0</div><div class="lbl">Kasus ISPA</div><div class="sub" id="sKasusSub">dari 0 skrining</div></div>
+    <div class="stat m"><div class="num" id="sTinggi">0</div><div class="lbl">Risiko tinggi</div><div class="sub">butuh pemeriksaan langsung</div></div>
+    <div class="stat o"><div class="num" id="sBaru">0</div><div class="lbl">Kasus baru 24 jam</div><div class="sub" id="sWarning">Status: aman</div></div>
+  </div>
+
+  <div class="sec">
+    <span class="eyebrow">Lima fitur utama</span>
+    <h2>Apa yang dikerjakan RESPIRA</h2>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>Early Warning System</h3><p class="muted">Mendeteksi lonjakan kasus di satu posko dan memberi peringatan sebelum penyebaran meluas.</p></div>
+      <div class="card"><h3>AI Risk Prediction</h3><p class="muted">Menghitung tingkat risiko dari gejala, usia, dan riwayat penyakit, lalu menandainya dengan warna.</p></div>
+      <div class="card"><h3>Real Time Surveillance</h3><p class="muted">Memantau jumlah kasus aktif, tren harian, dan sebaran per posko secara langsung.</p></div>
+      <div class="card"><h3>Telemedicine Integration</h3><p class="muted">Pengungsi bertanya lewat konsultasi daring, dokter membalas, seluruh riwayat tersimpan.</p></div>
+      <div class="card"><h3>Targeted Intervention</h3><p class="muted">Membantu petugas mendahulukan kelompok berisiko tinggi saat sumber daya terbatas.</p></div>
+      <div class="card" style="background:var(--hijau-muda);border-color:#C8E6C9"><h3>Data selalu hidup</h3><p class="muted">Setiap penambahan pengungsi dan setiap skrining baru langsung mengubah angka di dashboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TENTANG ================= -->
+<section class="page" id="p-tentang">
+  <span class="eyebrow">Tentang</span>
+  <h1>Kenapa RESPIRA dibutuhkan di pengungsian</h1>
+  <p class="lead">Setelah bencana, ISPA menyebar cepat. Penyebabnya berulang di hampir semua posko, dan semuanya bisa dikurangi kalau datanya terkumpul lebih cepat.</p>
+  <div class="grid g2 sec">
+    <div class="card"><h3>Hunian padat</h3><p class="muted">Tenda dan aula darurat membuat jarak antarorang sangat dekat, sehingga penularan lewat udara sulit dihindari.</p></div>
+    <div class="card"><h3>Fasilitas kesehatan terbatas</h3><p class="muted">Jumlah tenaga medis tidak sebanding dengan jumlah pengungsi, apalagi di lokasi yang sulit dijangkau.</p></div>
+    <div class="card"><h3>Pemantauan tidak berkala</h3><p class="muted">Pendataan manual memakan waktu, sehingga perubahan kondisi kesehatan sering terlambat diketahui.</p></div>
+    <div class="card"><h3>Gejala berat terlambat dikenali</h3><p class="muted">Pasien dengan sesak napas atau riwayat penyakit paru kerap baru ditangani setelah kondisinya memburuk.</p></div>
+  </div>
+  <div class="card sec">
+    <h2>Tiga pihak, satu platform</h2>
+    <p class="muted" style="margin-top:8px"><b>Pengungsi</b> mengisi skrining dan bertanya lewat konsultasi. <b>Tenaga kesehatan</b> membaca dashboard, menindaklanjuti kasus risiko tinggi, dan membalas pertanyaan. <b>Pengelola bencana</b> memakai laporan untuk mengatur logistik dan penempatan petugas.</p>
+  </div>
+</section>
+
+<!-- ================= CARA KERJA ================= -->
+<section class="page" id="p-cara">
+  <span class="eyebrow">Alur penggunaan</span>
+  <h1>Cara kerja RESPIRA</h1>
+  <p class="lead">Lima langkah berurutan, dari pengungsi mengisi formulir sampai petugas menindaklanjuti.</p>
+  <div class="grid sec" id="langkah"></div>
+  <div class="card sec">
+    <h2>Bagaimana risiko dihitung</h2>
+    <p class="muted" style="margin-top:8px">Setiap gejala dan faktor risiko punya bobot. Skornya dijumlahkan, lalu dikelompokkan.</p>
+    <div class="grid g3" style="margin-top:16px">
+      <div><b>Skor 0–3</b><div class="badge b-rendah" style="margin-top:6px">Risiko rendah</div><p class="muted" style="margin-top:8px">Edukasi pencegahan, pantau mandiri.</p></div>
+      <div><b>Skor 4–7</b><div class="badge b-sedang" style="margin-top:6px">Risiko sedang</div><p class="muted" style="margin-top:8px">Pemeriksaan lanjutan dalam 1×24 jam.</p></div>
+      <div><b>Skor ≥ 8</b><div class="badge b-tinggi" style="margin-top:6px">Risiko tinggi</div><p class="muted" style="margin-top:8px">Rujuk ke tenaga kesehatan hari itu juga.</p></div>
+    </div>
+    <p class="note" style="margin-top:16px">Sesak napas yang muncul bersama riwayat gangguan paru otomatis dinaikkan ke risiko tinggi, berapa pun skornya.</p>
+  </div>
+</section>
+
+<!-- ================= SKRINING ================= -->
+<section class="page" id="p-skrining">
+  <span class="eyebrow">Skrining ISPA</span>
+  <h1>Periksa gejala Anda</h1>
+  <p class="lead">Isi formulir di bawah. Hasilnya keluar seketika, dan datanya langsung masuk ke dashboard petugas.</p>
+
+  <div id="hasilArea"></div>
+
+  <div class="card sec">
+    <div class="grid g2">
+      <div class="field"><label for="sk-nama">Nama lengkap</label><input id="sk-nama" placeholder="Contoh: Siti Rahmawati"></div>
+      <div class="field"><label for="sk-usia">Usia (tahun)</label><input id="sk-usia" type="number" min="0" max="120" placeholder="Contoh: 34"></div>
+      <div class="field"><label for="sk-jk">Jenis kelamin</label><select id="sk-jk"><option>Perempuan</option><option>Laki-laki</option></select></div>
+      <div class="field"><label for="sk-posko">Lokasi pengungsian</label><select id="sk-posko"></select></div>
+    </div>
+    <div class="field">
+      <label>Gejala yang dirasakan</label>
+      <div class="chips" id="gejalaChips"></div>
+    </div>
+    <div class="field">
+      <label>Riwayat dan kondisi lingkungan</label>
+      <div class="chips" id="riwayatChips"></div>
+    </div>
+    <button class="btn" onclick="hitungSkrining()">Analisis risiko saya</button>
+    <p class="note" style="margin-top:14px">Hasil skrining adalah perkiraan awal, bukan diagnosis. Bila napas terasa berat, bibir membiru, atau demam tidak turun lebih dari tiga hari, segera temui petugas kesehatan terdekat.</p>
+  </div>
+
+  <div class="sec">
+    <h2>Skrining terakhir masuk</h2>
+    <div class="tbl-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Waktu</th><th>Nama</th><th>Usia</th><th>Posko</th><th>Skor</th><th>Kategori</th></tr></thead>
+      <tbody id="tblSkrining"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section class="page" id="p-dashboard">
+  <span class="eyebrow">Dashboard monitoring</span>
+  <h1>Kondisi kesehatan pengungsian</h1>
+  <div id="ewsArea"></div>
+  <div class="grid g4 sec">
+    <div class="stat"><div class="num" id="dPengungsi">0</div><div class="lbl">Total pengungsi</div></div>
+    <div class="stat b"><div class="num" id="dKasus">0</div><div class="lbl">Kasus ISPA</div></div>
+    <div class="stat m"><div class="num" id="dTinggi">0</div><div class="lbl">Risiko tinggi</div></div>
+    <div class="stat o"><div class="num" id="dBaru">0</div><div class="lbl">Kasus baru 24 jam</div></div>
+  </div>
+
+  <div class="grid g2 sec">
+    <div class="card">
+      <h3>Tren kasus 7 hari terakhir</h3>
+      <p class="muted" style="font-size:.85rem">Jumlah skrining berkategori sedang dan tinggi per hari.</p>
+      <div class="bars" id="tren"></div>
+    </div>
+    <div class="card">
+      <h3>Sebaran tingkat risiko</h3>
+      <p class="muted" style="font-size:.85rem">Proporsi hasil skrining yang sudah masuk.</p>
+      <div class="donut-row" style="margin-top:14px">
+        <svg width="150" height="150" viewBox="0 0 42 42" id="donut" aria-hidden="true"></svg>
+        <div class="legend" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card sec">
+    <h3>Peta risiko per posko</h3>
+    <p class="muted" style="font-size:.85rem">Warna menunjukkan proporsi kasus terhadap jumlah pengungsi di posko tersebut.</p>
+    <div id="poskoBars" style="margin-top:16px"></div>
+  </div>
+
+  <div class="grid g2 sec">
+    <div class="card">
+      <h3>Distribusi kelompok usia</h3>
+      <div class="bars" id="usiaBars" style="height:150px"></div>
+    </div>
+    <div class="card">
+      <h3>Gejala paling banyak dilaporkan</h3>
+      <div id="gejalaRank" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Daftar pasien risiko tinggi</h2>
+    <p class="muted">Prioritas kunjungan dan pemeriksaan langsung.</p>
+    <div class="tbl-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Waktu</th><th>Nama</th><th>Usia</th><th>Posko</th><th>Gejala utama</th><th>Skor</th></tr></thead>
+      <tbody id="tblTinggi"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= DATA PENGUNGSI ================= -->
+<section class="page" id="p-pengungsi">
+  <span class="eyebrow">Data pengungsi</span>
+  <h1>Tambah dan kelola jumlah pengungsi</h1>
+  <p class="lead">Setiap kali ada rombongan baru masuk posko, catat di sini. Total pengungsi di beranda dan dashboard langsung menyesuaikan.</p>
+
+  <div id="pengungsiAlert"></div>
+
+  <div class="grid g2 sec">
+    <div class="card">
+      <h3>Catat pengungsi masuk atau keluar</h3>
+      <div class="field" style="margin-top:12px">
+        <label for="pg-posko">Lokasi pengungsian</label>
+        <select id="pg-posko"></select>
+      </div>
+      <div class="field">
+        <label for="pg-jumlah">Jumlah orang</label>
+        <input id="pg-jumlah" type="number" placeholder="Contoh: 45">
+        <p class="muted" style="font-size:.8rem;margin-top:6px">Isi angka minus untuk mencatat pengungsi yang keluar, misalnya -12.</p>
+      </div>
+      <div class="field">
+        <label for="pg-ket">Keterangan</label>
+        <input id="pg-ket" placeholder="Contoh: Rombongan dari Dusun Cilame">
+      </div>
+      <button class="btn" onclick="tambahPengungsi()">Simpan data pengungsi</button>
+    </div>
+
+    <div class="card">
+      <h3>Tambah posko baru</h3>
+      <p class="muted" style="font-size:.88rem;margin:6px 0 12px">Posko baru otomatis muncul di pilihan skrining, dashboard, dan peta risiko.</p>
+      <div class="field"><label for="pk-nama">Nama posko</label><input id="pk-nama" placeholder="Contoh: Posko Melati Indah"></div>
+      <div class="field"><label for="pk-awal">Jumlah pengungsi awal</label><input id="pk-awal" type="number" min="0" placeholder="Contoh: 120"></div>
+      <button class="btn biru" onclick="tambahPosko()">Tambah posko</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Rekap per posko</h2>
+    <div class="tbl-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Posko</th><th>Jumlah pengungsi</th><th>Kasus ISPA</th><th>Risiko tinggi</th><th>Rasio kasus</th></tr></thead>
+      <tbody id="tblPosko"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card sec">
+    <h3>Cadangan data</h3>
+    <p class="muted">Data tersimpan otomatis dan tetap ada setelah tautan ditutup. Unduh berkas cadangan bila ingin menyimpan salinan sendiri atau memindahkannya ke perangkat lain.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center">
+      <button class="btn kecil ghost" onclick="unduhData()">Unduh cadangan</button>
+      <button class="btn kecil ghost" style="color:var(--merah);border-color:#F3C9C9" onclick="kosongkanData()">Kosongkan semua data</button>
+      <label class="btn kecil ghost" style="margin:0;cursor:pointer">Pulihkan dari berkas
+        <input type="file" accept="application/json" onchange="pulihkanData(this)" style="display:none">
+      </label>
+      <span class="muted" id="statusSimpan" style="font-size:.82rem"></span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Riwayat perubahan data</h2>
+    <p class="muted">Semua penambahan tercatat dan tidak dihapus, supaya bisa ditelusuri kembali.</p>
+    <div class="tbl-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Waktu</th><th>Posko</th><th>Perubahan</th><th>Keterangan</th></tr></thead>
+      <tbody id="tblLog"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= CHAT ================= -->
+<section class="page" id="p-chat">
+  <span class="eyebrow">Telemedicine</span>
+  <h1>Konsultasi dengan tenaga kesehatan</h1>
+  <p class="lead">Kirim pertanyaan Anda, dokter akan membalas di sini. Semua pertanyaan dan jawaban tersimpan sebagai riwayat, jadi pengungsi lain dengan keluhan serupa bisa langsung membacanya.</p>
+  <p class="note" style="margin-top:14px">Riwayat konsultasi bersifat terbuka dan dapat dibaca semua pengguna website ini. Jangan menuliskan data pribadi yang sensitif.</p>
+
+  <div id="chatAlert"></div>
+
+  <div class="card sec">
+    <div class="grid g2">
+      <div class="field"><label for="ch-nama">Nama</label><input id="ch-nama" placeholder="Nama Anda"></div>
+      <div class="field"><label for="ch-posko">Posko</label><select id="ch-posko"></select></div>
+    </div>
+    <div class="field"><label for="ch-pesan">Pertanyaan atau keluhan</label><textarea id="ch-pesan" placeholder="Contoh: Anak saya umur 4 tahun batuk sudah 5 hari dan malam demam. Apa yang sebaiknya saya lakukan?"></textarea></div>
+    <button class="btn" onclick="kirimPertanyaan()">Kirim pertanyaan</button>
+  </div>
+
+  <div class="card sec" style="background:var(--biru-muda);border-color:#BBDEFB">
+    <div class="grid g2" style="align-items:end">
+      <div>
+        <h3 id="dokterJudul">Masuk sebagai dokter</h3>
+        <p class="muted" style="font-size:.88rem" id="dokterKet">Petugas kesehatan masuk untuk membalas pertanyaan yang belum terjawab.</p>
+      </div>
+      <div id="dokterForm">
+        <div class="field" style="margin-bottom:10px"><label for="dk-nama">Nama dokter / petugas</label><input id="dk-nama" placeholder="dr. Nama Anda"></div>
+        <div class="field" style="margin-bottom:10px"><label for="dk-sandi">Kata sandi</label><input id="dk-sandi" type="password" placeholder="respira2026"></div>
+        <button class="btn biru kecil" onclick="loginDokter()">Masuk</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="thread-head">
+      <h2>Riwayat konsultasi</h2>
+      <div style="min-width:240px;flex:1"><input id="cariChat" placeholder="Cari topik, misalnya: batuk anak" oninput="renderChat()"></div>
+    </div>
+    <p class="muted">Tersimpan permanen. Balasan dokter ditambahkan di bawah pertanyaan, tidak menghapus pesan sebelumnya.</p>
+    <div id="chatList" style="margin-top:18px"></div>
+  </div>
+</section>
+
+<!-- ================= EDUKASI ================= -->
+<section class="page" id="p-edukasi">
+  <span class="eyebrow">Edukasi</span>
+  <h1>Mengenal ISPA dan cara mencegahnya</h1>
+  <div class="grid g2 sec">
+    <div class="card"><h3>Apa itu ISPA</h3><p class="muted">Infeksi Saluran Pernapasan Akut adalah infeksi pada hidung, tenggorokan, sampai paru-paru yang berlangsung cepat, umumnya kurang dari 14 hari.</p></div>
+    <div class="card"><h3>Penyebabnya</h3><p class="muted">Virus dan bakteri yang menyebar lewat percikan napas, diperparah oleh debu pascabencana, asap dapur umum, dan hunian yang padat.</p></div>
+    <div class="card"><h3>Gejala yang perlu diwaspadai</h3><p class="muted">Demam, batuk berdahak, pilek, nyeri tenggorokan, badan lemas. Waspada bila muncul sesak napas, napas cepat pada anak, atau bibir membiru.</p></div>
+    <div class="card"><h3>Kapan harus ke petugas</h3><p class="muted">Sesak napas, demam lebih dari tiga hari, batuk berdarah, anak menolak minum, atau lansia yang tampak makin lemah.</p></div>
+  </div>
+  <div class="card sec">
+    <h2>Lima langkah pencegahan di posko</h2>
+    <ul class="tips" style="margin-top:10px">
+      <li>Pakai masker saat batuk, pilek, atau berada di keramaian tenda.</li>
+      <li>Cuci tangan dengan sabun, terutama sebelum makan dan setelah menutup mulut saat batuk.</li>
+      <li>Buka ventilasi tenda tiap pagi agar udara berganti.</li>
+      <li>Pisahkan tempat tidur orang yang sedang batuk, minimal beri jarak satu meter.</li>
+      <li>Segera lapor ke petugas bila ada anggota keluarga dengan gejala berat.</li>
+    </ul>
+  </div>
+  <div class="card sec" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between">
+    <div>
+      <h3>Uji pemahaman lewat permainan</h3>
+      <p class="muted">Sepuluh pertanyaan, sepuluh posko. Jawaban benar membuat pelari maju ke posko berikutnya.</p>
+    </div>
+    <button class="btn" onclick="go('game');mulaiGame()">Main sekarang</button>
+  </div>
+</section>
+
+<!-- ================= GAME ================= -->
+<section class="page" id="p-game">
+  <span class="eyebrow">Permainan edukasi</span>
+  <h1>Lari Antarposko</h1>
+  <p class="lead">Pelari harus melewati sepuluh posko untuk sampai ke pos kesehatan terakhir. Setiap posko menahan pelari dengan satu pertanyaan tentang ISPA. Jawab benar, pelari lanjut berlari.</p>
+
+  <div class="lintasan sec">
+    <div class="skorbar">
+      <span id="gPosisi">Posko 0 dari 10</span>
+      <span id="gBenar">Benar 0</span>
+      <span class="nyawa" id="gNyawa">❤️❤️❤️</span>
+    </div>
+    <div class="jalur">
+      <div class="rel"></div>
+      <div id="gPosko"></div>
+      <div class="pelari" id="gPelari" style="left:2%">🏃</div>
+    </div>
+  </div>
+
+  <div class="card sec" id="gKotak">
+    <div id="gIsi"></div>
+  </div>
+</section>
+
+<!-- ================= KONTAK ================= -->
+<section class="page" id="p-kontak">
+  <span class="eyebrow">Kontak &amp; layanan</span>
+  <h1>Hubungi tim RESPIRA</h1>
+  <div class="grid g2 sec">
+    <div class="card">
+      <h3>Telepon &amp; WhatsApp</h3>
+      <p style="font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:1.3rem;font-weight:700;margin:6px 0 10px">088226468187</p>
+      <a class="btn kecil" href="tel:088226468187">Telepon sekarang</a>
+      <a class="btn kecil ghost" href="https://wa.me/6288226468187" target="_blank" rel="noopener">Chat WhatsApp</a>
+    </div>
+    <div class="card">
+      <h3>Surel</h3>
+      <p style="font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:1.05rem;font-weight:700;margin:6px 0 10px;word-break:break-all">respirainfoo@gmail.com</p>
+      <a class="btn kecil biru" href="mailto:respirainfoo@gmail.com?subject=Pertanyaan%20RESPIRA">Kirim surel</a>
+    </div>
+    <div class="card">
+      <h3>Konsultasi daring</h3>
+      <p class="muted">Pertanyaan kesehatan sebaiknya dikirim lewat halaman konsultasi agar tercatat dan bisa dibaca pengungsi lain.</p>
+      <button class="btn kecil ghost" style="margin-top:10px" onclick="go('chat')">Buka konsultasi</button>
+    </div>
+    <div class="card">
+      <h3>Kondisi darurat</h3>
+      <p class="muted">Untuk kegawatdaruratan, hubungi 119 atau langsung datangi pos kesehatan terdekat di lokasi pengungsian. Jangan menunggu balasan konsultasi.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="brand" style="color:#fff;margin-bottom:10px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="M8.5 13c0 4-1.5 7-3.5 7s-3-2-3-5c0-3 1-6 3-8"/><path d="M15.5 13c0 4 1.5 7 3.5 7s3-2 3-5c0-3-1-6-3-8"/></svg>
+          RESPIRA
+        </div>
+        <p>Sistem skrining dan pemantauan ISPA pascabencana untuk pengungsi, tenaga kesehatan, dan pengelola posko.</p>
+      </div>
+      <div>
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#" onclick="go('skrining');return false">Skrining ISPA</a></li>
+          <li><a href="#" onclick="go('dashboard');return false">Dashboard</a></li>
+          <li><a href="#" onclick="go('pengungsi');return false">Data pengungsi</a></li>
+          <li><a href="#" onclick="go('chat');return false">Konsultasi</a></li>
+          <li><a href="#" onclick="go('edukasi');return false">Edukasi</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul>
+          <li><a href="tel:088226468187">088226468187</a></li>
+          <li><a href="mailto:respirainfoo@gmail.com">respirainfoo@gmail.com</a></li>
+          <li>Darurat: 119</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">RESPIRA — hasil skrining bersifat perkiraan awal dan tidak menggantikan pemeriksaan tenaga kesehatan.</div>
+  </div>
+</footer>
+
+<script>
+/* ===================== DATA ===================== */
+const GEJALA = [
+  {k:'demam',t:'Demam',b:2},{k:'batuk',t:'Batuk',b:2},{k:'pilek',t:'Pilek',b:1},
+  {k:'sesak',t:'Sesak napas',b:3},{k:'dahak',t:'Berdahak',b:1},{k:'lemas',t:'Badan lemas',b:1},
+  {k:'tenggorokan',t:'Nyeri tenggorokan',b:1},{k:'nyeri_dada',t:'Nyeri dada',b:2}
+];
+const RIWAYAT = [
+  {k:'paru',t:'Riwayat gangguan paru',b:3},{k:'kontak',t:'Kontak dengan pasien ISPA',b:2},
+  {k:'asap',t:'Terpapar asap atau debu',b:1},{k:'rokok',t:'Perokok aktif',b:1},
+  {k:'kronis',t:'Penyakit kronis lain',b:2}
+];
+const KUNCI_DOKTER = 'respira2026';
+
+let db = {posko:[], log:[], skrining:[], chat:[]};
+let dokter = null;
+
+/* ===================== STORAGE (permanen + sinkron) ===================== */
+const KUNCI_DB = 'respira-db';
+let statusSimpan = '';
+
+function kosong(){ return {posko:[],log:[],skrining:[],chat:[],diperbarui:0}; }
+
+function bacaLokal(){
+  try{ const t=localStorage.getItem(KUNCI_DB); return t?JSON.parse(t):null; }catch(e){ return null; }
+}
+async function bacaBersama(){
+  try{
+    if(!window.storage) return null;
+    const r = await window.storage.get(KUNCI_DB, true);
+    return (r && r.value) ? JSON.parse(r.value) : null;
+  }catch(e){ return null; }
+}
+
+/* Gabungkan dua salinan data: tidak ada catatan yang hilang, semua id disatukan */
+function gabung(a,b){
+  if(!a) return b; if(!b) return a;
+  const out = kosong();
+  ['posko','log','skrining'].forEach(k=>{
+    const peta = new Map();
+    (a[k]||[]).concat(b[k]||[]).forEach(x=>{ if(x && x.id) peta.set(x.id,x); });
+    out[k] = [...peta.values()];
+  });
+  const petaC = new Map();
+  (a.chat||[]).concat(b.chat||[]).forEach(c=>{
+    if(!c || !c.id) return;
+    const lama = petaC.get(c.id);
+    if(!lama){ petaC.set(c.id, {...c, balas:[...(c.balas||[])]}); return; }
+    const kunci = new Set(lama.balas.map(x=>x.oleh+'|'+x.waktu+'|'+x.pesan));
+    (c.balas||[]).forEach(x=>{ const k=x.oleh+'|'+x.waktu+'|'+x.pesan; if(!kunci.has(k)){ kunci.add(k); lama.balas.push(x); } });
+    lama.balas.sort((x,y)=>x.waktu-y.waktu);
+  });
+  out.chat = [...petaC.values()];
+  out.diperbarui = Math.max(a.diperbarui||0, b.diperbarui||0);
+  return out;
+}
+
+async function muat(){
+  const lokal = bacaLokal();
+  const bersama = await bacaBersama();
+  const gab = gabung(lokal, bersama);
+  if(gab && gab.posko && gab.posko.length){
+    db = gab;
+    renderSemua();
+    /* rapikan agar kedua tempat penyimpanan sama isinya */
+    if(JSON.stringify(lokal)!==JSON.stringify(bersama)) simpan(true);
+  }else{
+    seed();
+  }
+  /* sinkron berkala: balasan dokter / data dari perangkat lain ikut muncul */
+  setInterval(sinkron, 15000);
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) sinkron(); });
+}
+
+async function sinkron(){
+  const bersama = await bacaBersama();
+  if(!bersama) return;
+  const sebelum = JSON.stringify(db);
+  db = gabung(db, bersama);
+  if(JSON.stringify(db)!==sebelum){ tulis(); renderSemua(); }
+}
+
+function tulis(){
+  db.diperbarui = Date.now();
+  try{ localStorage.setItem(KUNCI_DB, JSON.stringify(db)); statusSimpan='Tersimpan di perangkat ini'; }
+  catch(e){ statusSimpan='Gagal menyimpan di perangkat'; }
+  if(window.storage){
+    window.storage.set(KUNCI_DB, JSON.stringify(db), true)
+      .then(()=>{ statusSimpan='Tersimpan permanen · '+waktuTeks(Date.now()); tandaSimpan(); })
+      .catch(()=>{ statusSimpan='Tersimpan lokal, server belum sinkron'; tandaSimpan(); });
+  }
+  tandaSimpan();
+}
+function tandaSimpan(){
+  const e=document.getElementById('statusSimpan');
+  if(e) e.textContent = statusSimpan;
+}
+async function simpan(diam){
+  tulis();
+  if(!diam) renderSemua();
+}
+
+function kosongkanData(){
+  if(!confirm('Hapus seluruh posko, data pengungsi, skrining, dan konsultasi? Tindakan ini tidak bisa dibatalkan. Unduh cadangan dulu bila perlu.')) return;
+  db = kosong();
+  simpan();
+  const a=document.getElementById('pengungsiAlert');
+  if(a) a.innerHTML='<div class="alert ok">Semua data dikosongkan. Mulai dengan menambahkan posko di kartu sebelah.</div>';
+}
+
+/* Cadangan manual: unduh & pulihkan seluruh data */
+function unduhData(){
+  const blob = new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'respira-data-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function pulihkanData(input){
+  const f = input.files[0]; if(!f) return;
+  const fr = new FileReader();
+  fr.onload = ()=>{
+    try{
+      const masuk = JSON.parse(fr.result);
+      db = gabung(db, masuk);
+      simpan();
+      document.getElementById('pengungsiAlert').innerHTML='<div class="alert ok">Data cadangan berhasil digabungkan. Tidak ada catatan lama yang terhapus.</div>';
+    }catch(e){
+      document.getElementById('pengungsiAlert').innerHTML='<div class="alert err">Berkas tidak terbaca. Pilih berkas cadangan RESPIRA berformat .json.</div>';
+    }
+    input.value='';
+  };
+  fr.readAsText(f);
+}
+
+function seed(){
+  /* Mulai kosong. Semua angka hanya berasal dari data yang benar-benar diisi pengguna. */
+  db = kosong();
+  simpan();
+}
+function buatSkrining(nama,usia,jk,poskoId,g,r,waktu){
+  const h=hitungSkor(usia,g,r);
+  return {id:'s'+Math.random().toString(36).slice(2,9),nama,usia,jk,poskoId,gejala:g,riwayat:r,skor:h.skor,kategori:h.kategori,waktu};
+}
+
+/* ===================== LOGIKA RISIKO ===================== */
+function hitungSkor(usia,g,r){
+  let skor=0;
+  g.forEach(k=>{const o=GEJALA.find(x=>x.k===k); if(o) skor+=o.b;});
+  r.forEach(k=>{const o=RIWAYAT.find(x=>x.k===k); if(o) skor+=o.b;});
+  if(usia<5||usia>60) skor+=2;
+  let kategori = skor>=8?'tinggi':(skor>=4?'sedang':'rendah');
+  if(g.includes('sesak')&&r.includes('paru')) kategori='tinggi';
+  return {skor,kategori};
+}
+
+/* ===================== NAVIGASI ===================== */
+function go(p){
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  document.querySelectorAll('.menu button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  document.getElementById('menu').classList.remove('open');
+  if(p==='game' && !gJalan && gIdx===0) mulaiGame();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===================== HITUNGAN ===================== */
+const totalPengungsi = ()=> db.log.reduce((a,b)=>a+b.jumlah,0);
+const pengungsiPosko = id => db.log.filter(l=>l.poskoId===id).reduce((a,b)=>a+b.jumlah,0);
+const kasus = ()=> db.skrining.filter(s=>s.kategori!=='rendah');
+const namaPosko = id => (db.posko.find(p=>p.id===id)||{nama:'—'}).nama;
+const fmt = n => n.toLocaleString('id-ID');
+const waktuTeks = t => new Date(t).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+const esc = s => String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+/* ===================== RENDER ===================== */
+function renderSemua(){ gambarPosko(); isiPilihan(); statistik(); tabelSkrining(); dashboard(); tabelPosko(); renderChat(); langkah(); chips(); }
+
+function chips(){
+  const gc=document.getElementById('gejalaChips'), rc=document.getElementById('riwayatChips');
+  if(gc.children.length) return;
+  gc.innerHTML = GEJALA.map(g=>`<label class="chip"><input type="checkbox" value="${g.k}" name="gejala"><span>${g.t}</span></label>`).join('');
+  rc.innerHTML = RIWAYAT.map(g=>`<label class="chip"><input type="checkbox" value="${g.k}" name="riwayat"><span>${g.t}</span></label>`).join('');
+}
+function langkah(){
+  const el=document.getElementById('langkah');
+  if(el.children.length) return;
+  const L=[['Pengungsi mengisi skrining','Identitas dasar, lokasi posko, gejala yang dirasakan, dan riwayat penyakit.'],
+    ['Sistem menghitung skor risiko','Setiap gejala dan faktor risiko diberi bobot, lalu dijumlahkan.'],
+    ['Hasil dikelompokkan tiga warna','Hijau rendah, oranye sedang, merah tinggi.'],
+    ['Data masuk ke dashboard','Angka kasus, tren harian, dan sebaran posko berubah seketika.'],
+    ['Petugas menindaklanjuti','Risiko tinggi dikunjungi lebih dulu, risiko rendah menerima edukasi pencegahan.']];
+  el.innerHTML = L.map((l,i)=>`<div class="card" style="border-left:5px solid var(--biru)"><div class="eyebrow">Langkah ${i+1}</div><h3 style="margin-top:6px">${l[0]}</h3><p class="muted">${l[1]}</p></div>`).join('');
+}
+function isiPilihan(){
+  const opt = '<option value="">— pilih posko —</option>' + db.posko.map(p=>`<option value="${p.id}">${esc(p.nama)}</option>`).join('');
+  ['sk-posko','pg-posko','ch-posko'].forEach(id=>{
+    const s=document.getElementById(id); const v=s.value; s.innerHTML=opt; if(v) s.value=v;
+  });
+}
+function statistik(){
+  const tp=totalPengungsi(), k=kasus(), t=k.filter(s=>s.kategori==='tinggi');
+  const baru = db.skrining.filter(s=>s.kategori!=='rendah' && Date.now()-s.waktu < 864e5).length;
+  const set=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=v;};
+  set('hPengungsi',fmt(tp)); set('hKasus',fmt(k.length)); set('hTinggi',fmt(t.length));
+  set('sPengungsi',fmt(tp)); set('sKasus',fmt(k.length)); set('sTinggi',fmt(t.length)); set('sBaru',fmt(baru));
+  set('dPengungsi',fmt(tp)); set('dKasus',fmt(k.length)); set('dTinggi',fmt(t.length)); set('dBaru',fmt(baru));
+  set('sPoskoCount',db.posko.length+' lokasi terpantau');
+  set('sKasusSub','dari '+db.skrining.length+' skrining');
+  set('sWarning', baru>=5?'Status: perlu perhatian':'Status: aman');
+  set('heroPosko', db.posko.length+' lokasi pemantauan aktif');
+}
+function tabelSkrining(){
+  const b=document.getElementById('tblSkrining');
+  const d=[...db.skrining].sort((a,b)=>b.waktu-a.waktu).slice(0,12);
+  b.innerHTML = d.map(s=>`<tr><td>${waktuTeks(s.waktu)}</td><td>${esc(s.nama)}</td><td>${s.usia}</td><td>${esc(namaPosko(s.poskoId))}</td><td><b>${s.skor}</b></td><td><span class="badge b-${s.kategori}">${s.kategori}</span></td></tr>`).join('')
+    || '<tr><td colspan="6" class="muted">Belum ada skrining. Isi formulir di atas untuk memulai.</td></tr>';
+}
+function dashboard(){
+  // EWS
+  const baru = db.skrining.filter(s=>s.kategori!=='rendah' && Date.now()-s.waktu<864e5).length;
+  const sblm = db.skrining.filter(s=>s.kategori!=='rendah' && Date.now()-s.waktu>=864e5 && Date.now()-s.waktu<1728e5).length;
+  const ews=document.getElementById('ewsArea');
+  if(baru>sblm && baru>=3) ews.innerHTML=`<div class="alert err">Peringatan dini: ${baru} kasus baru dalam 24 jam terakhir, naik dari ${sblm} kasus sehari sebelumnya. Tinjau posko dengan rasio kasus tertinggi.</div>`;
+  else if(baru>0) ews.innerHTML=`<div class="alert warn">${baru} kasus baru dalam 24 jam terakhir. Belum terdeteksi lonjakan.</div>`;
+  else ews.innerHTML=`<div class="alert ok">Tidak ada kasus baru dalam 24 jam terakhir.</div>`;
+
+  // Tren 7 hari
+  const hari=[]; const now=new Date(); now.setHours(23,59,59);
+  for(let i=6;i>=0;i--){
+    const akhir=now.getTime()-i*864e5, awal=akhir-864e5;
+    const c=db.skrining.filter(s=>s.kategori!=='rendah'&&s.waktu>awal&&s.waktu<=akhir).length;
+    hari.push({l:new Date(akhir).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}),v:c});
+  }
+  const maxH=Math.max(1,...hari.map(h=>h.v));
+  document.getElementById('tren').innerHTML = hari.map(h=>
+    `<div class="col"><span class="val">${h.v}</span><div class="bar" style="height:${(h.v/maxH)*100}%"></div><span class="cap">${h.l}</span></div>`).join('');
+
+  // Donut
+  const c={rendah:0,sedang:0,tinggi:0}; db.skrining.forEach(s=>c[s.kategori]++);
+  const tot=db.skrining.length||1;
+  const warna={rendah:'#2E7D32',sedang:'#FF9800',tinggi:'#D32F2F'};
+  let off=25, seg='';
+  ['rendah','sedang','tinggi'].forEach(k=>{
+    const pct=c[k]/tot*100;
+    seg+=`<circle cx="21" cy="21" r="15.915" fill="none" stroke="${warna[k]}" stroke-width="6" stroke-dasharray="${pct.toFixed(2)} ${(100-pct).toFixed(2)}" stroke-dashoffset="${off}"></circle>`;
+    off = (off - pct + 100) % 100;
+  });
+  document.getElementById('donut').innerHTML =
+    `<circle cx="21" cy="21" r="15.915" fill="none" stroke="#EDF3EF" stroke-width="6"></circle>${seg}
+     <text x="21" y="20.5" text-anchor="middle" font-size="6.5" font-weight="700" fill="#12241C">${db.skrining.length}</text>
+     <text x="21" y="25.5" text-anchor="middle" font-size="2.8" fill="#5C6B64">SKRINING</text>`;
+  document.getElementById('donutLegend').innerHTML = ['tinggi','sedang','rendah'].map(k=>
+    `<div><i style="background:${warna[k]}"></i><b>${c[k]}</b> risiko ${k} <span class="muted">(${(c[k]/tot*100).toFixed(0)}%)</span></div>`).join('');
+
+  // Peta risiko posko
+  document.getElementById('poskoBars').innerHTML = db.posko.map(p=>{
+    const jum=pengungsiPosko(p.id), ks=kasus().filter(s=>s.poskoId===p.id).length;
+    const rasio = jum>0 ? (ks/jum*100) : 0;
+    const w = rasio>=5?'var(--merah)':(rasio>=2?'var(--oranye)':'var(--hijau)');
+    return `<div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:.9rem"><b>${esc(p.nama)}</b>
+      <span class="muted">${ks} kasus / ${fmt(jum)} pengungsi — ${rasio.toFixed(2)}%</span></div>
+      <div class="meter"><i style="width:${Math.min(100,rasio*12)}%;background:${w}"></i></div></div>`;
+  }).join('');
+
+  // Usia
+  const kel=[['0–5',0,5],['6–17',6,17],['18–40',18,40],['41–60',41,60],['60+',61,200]];
+  const dataU=kel.map(([l,a,b])=>({l,v:kasus().filter(s=>s.usia>=a&&s.usia<=b).length}));
+  const maxU=Math.max(1,...dataU.map(d=>d.v));
+  document.getElementById('usiaBars').innerHTML=dataU.map(d=>
+    `<div class="col"><span class="val">${d.v}</span><div class="bar" style="height:${(d.v/maxU)*100}%;background:linear-gradient(180deg,#2E7D32,#66BB6A)"></div><span class="cap">${d.l}</span></div>`).join('');
+
+  // Gejala
+  const hit={}; db.skrining.forEach(s=>s.gejala.forEach(g=>hit[g]=(hit[g]||0)+1));
+  const urut=GEJALA.map(g=>({t:g.t,v:hit[g.k]||0})).sort((a,b)=>b.v-a.v).slice(0,6);
+  const maxG=Math.max(1,...urut.map(u=>u.v));
+  document.getElementById('gejalaRank').innerHTML=urut.map(u=>
+    `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:.88rem"><span>${u.t}</span><b>${u.v}</b></div>
+     <div class="meter"><i style="width:${u.v/maxG*100}%;background:var(--biru)"></i></div></div>`).join('');
+
+  // Tabel risiko tinggi
+  const t=kasus().filter(s=>s.kategori==='tinggi').sort((a,b)=>b.waktu-a.waktu);
+  document.getElementById('tblTinggi').innerHTML = t.map(s=>{
+    const g=s.gejala.map(k=>(GEJALA.find(x=>x.k===k)||{}).t).filter(Boolean).slice(0,3).join(', ');
+    return `<tr><td>${waktuTeks(s.waktu)}</td><td><b>${esc(s.nama)}</b></td><td>${s.usia}</td><td>${esc(namaPosko(s.poskoId))}</td><td>${g}</td><td><span class="badge b-tinggi">${s.skor}</span></td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="muted">Tidak ada pasien risiko tinggi saat ini.</td></tr>';
+}
+function tabelPosko(){
+  document.getElementById('tblPosko').innerHTML = db.posko.map(p=>{
+    const jum=pengungsiPosko(p.id), ks=kasus().filter(s=>s.poskoId===p.id).length;
+    const tg=db.skrining.filter(s=>s.poskoId===p.id&&s.kategori==='tinggi').length;
+    const rasio=jum>0?(ks/jum*100).toFixed(2):'0.00';
+    return `<tr><td><b>${esc(p.nama)}</b></td><td>${fmt(jum)}</td><td>${ks}</td><td>${tg}</td><td>${rasio}%</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="muted">Belum ada posko. Tambahkan posko lebih dulu di kartu sebelah.</td></tr>';
+  const log=[...db.log].sort((a,b)=>b.waktu-a.waktu).slice(0,15);
+  document.getElementById('tblLog').innerHTML = log.map(l=>
+    `<tr><td>${waktuTeks(l.waktu)}</td><td>${esc(namaPosko(l.poskoId))}</td>
+     <td style="color:${l.jumlah<0?'var(--merah)':'var(--hijau)'};font-weight:700">${l.jumlah>0?'+':''}${fmt(l.jumlah)} orang</td>
+     <td class="muted">${esc(l.ket||'—')}</td></tr>`).join('')
+    || '<tr><td colspan="4" class="muted">Belum ada perubahan data pengungsi.</td></tr>';
+}
+
+/* ===================== AKSI ===================== */
+function tambahPengungsi(){
+  const posko=document.getElementById('pg-posko').value;
+  const jum=parseInt(document.getElementById('pg-jumlah').value,10);
+  const ket=document.getElementById('pg-ket').value.trim();
+  const a=document.getElementById('pengungsiAlert');
+  if(!posko||!jum){ a.innerHTML='<div class="alert err">Pilih posko dan isi jumlah orang lebih dulu.</div>'; return; }
+  const sisa=pengungsiPosko(posko)+jum;
+  if(sisa<0){ a.innerHTML='<div class="alert err">Jumlah keluar melebihi pengungsi yang tercatat di posko ini.</div>'; return; }
+  db.log.push({id:'lg'+Date.now(),poskoId:posko,jumlah:jum,ket,waktu:Date.now()});
+  document.getElementById('pg-jumlah').value=''; document.getElementById('pg-ket').value='';
+  a.innerHTML=`<div class="alert ok">Tersimpan. ${namaPosko(posko)} kini tercatat ${fmt(pengungsiPosko(posko)+0)} pengungsi, total seluruh posko ${fmt(totalPengungsi())} orang.</div>`;
+  simpan();
+}
+function tambahPosko(){
+  const nama=document.getElementById('pk-nama').value.trim();
+  const awal=parseInt(document.getElementById('pk-awal').value,10)||0;
+  const a=document.getElementById('pengungsiAlert');
+  if(!nama){ a.innerHTML='<div class="alert err">Isi nama posko lebih dulu.</div>'; return; }
+  const id='pk'+Date.now();
+  db.posko.push({id,nama});
+  if(awal>0) db.log.push({id:'lg'+Date.now(),poskoId:id,jumlah:awal,ket:'Pendataan awal posko',waktu:Date.now()});
+  document.getElementById('pk-nama').value=''; document.getElementById('pk-awal').value='';
+  a.innerHTML=`<div class="alert ok">Posko ${esc(nama)} ditambahkan dan sudah muncul di pilihan skrining serta dashboard.</div>`;
+  simpan();
+}
+function hitungSkrining(){
+  const nama=document.getElementById('sk-nama').value.trim();
+  const usia=parseInt(document.getElementById('sk-usia').value,10);
+  const jk=document.getElementById('sk-jk').value;
+  const posko=document.getElementById('sk-posko').value;
+  const g=[...document.querySelectorAll('input[name=gejala]:checked')].map(e=>e.value);
+  const r=[...document.querySelectorAll('input[name=riwayat]:checked')].map(e=>e.value);
+  const area=document.getElementById('hasilArea');
+  if(!db.posko.length){ area.innerHTML='<div class="alert err">Belum ada posko terdaftar. Petugas perlu menambahkan posko di halaman Data Pengungsi lebih dulu.</div>'; return; }
+  if(!posko){ area.innerHTML='<div class="alert err">Pilih lokasi posko lebih dulu.</div>'; return; }
+  if(!nama||isNaN(usia)||!posko){ area.innerHTML='<div class="alert err">Lengkapi nama, usia, dan lokasi pengungsian.</div>'; window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(!g.length){ area.innerHTML='<div class="alert warn">Pilih minimal satu gejala. Bila tidak ada keluhan sama sekali, Anda belum perlu skrining.</div>'; window.scrollTo({top:0,behavior:'smooth'}); return; }
+
+  const s=buatSkrining(nama,usia,jk,posko,g,r,Date.now());
+  db.skrining.push(s);
+
+  const teksG=g.map(k=>(GEJALA.find(x=>x.k===k)||{}).t).filter(Boolean).join(', ');
+  const teksR=r.map(k=>(RIWAYAT.find(x=>x.k===k)||{}).t).filter(Boolean).join(', ')||'tidak ada';
+  const saran={
+    tinggi:['Temui tenaga kesehatan di pos kesehatan hari ini juga.','Kurangi aktivitas berat dan istirahat dengan posisi kepala ditinggikan.','Gunakan masker dan pisahkan tempat tidur dari anggota keluarga lain.','Segera cari pertolongan bila napas makin berat atau bibir membiru.'],
+    sedang:['Minta pemeriksaan lanjutan dalam 1×24 jam.','Perbanyak minum air hangat dan istirahat cukup.','Pakai masker saat berada di tenda bersama.','Pantau suhu tubuh pagi dan malam.'],
+    rendah:['Lanjutkan pencegahan: masker, cuci tangan, ventilasi terbuka.','Pantau gejala tiga hari ke depan.','Ulangi skrining bila muncul demam atau sesak napas.']
+  }[s.kategori];
+  const judul={tinggi:'Risiko tinggi',sedang:'Risiko sedang',rendah:'Risiko rendah'}[s.kategori];
+
+  area.innerHTML=`<div class="hasil ${s.kategori}">
+    <div class="eyebrow" style="color:rgba(255,255,255,.85)">Hasil analisis risiko</div>
+    <div class="kat">${judul}</div>
+    <p style="opacity:.95;margin-top:4px">${esc(nama)} · ${usia} tahun · ${jk} · ${esc(namaPosko(posko))} · skor ${s.skor}</p>
+    <p style="opacity:.95;margin-top:10px"><b>Gejala:</b> ${teksG}<br><b>Faktor risiko:</b> ${teksR}</p>
+    <p style="opacity:.95;margin-top:12px;font-weight:700">Rekomendasi tindakan</p>
+    <ul class="tips">${saran.map(x=>`<li>${x}</li>`).join('')}</ul>
+    <p style="opacity:.85;font-size:.85rem;margin-top:12px">Data ini sudah masuk ke dashboard petugas kesehatan.</p>
+  </div>`;
+  document.querySelectorAll('input[name=gejala]:checked,input[name=riwayat]:checked').forEach(e=>e.checked=false);
+  document.getElementById('sk-nama').value=''; document.getElementById('sk-usia').value='';
+  simpan();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===================== CHAT ===================== */
+function kirimPertanyaan(){
+  const nama=document.getElementById('ch-nama').value.trim();
+  const posko=document.getElementById('ch-posko').value;
+  const pesan=document.getElementById('ch-pesan').value.trim();
+  const a=document.getElementById('chatAlert');
+  if(!nama||!pesan){ a.innerHTML='<div class="alert err">Isi nama dan pertanyaan Anda.</div>'; return; }
+  if(!posko){ a.innerHTML='<div class="alert err">Pilih posko Anda lebih dulu.</div>'; return; }
+  db.chat.push({id:'c'+Date.now(),nama,poskoId:posko,pesan,waktu:Date.now(),balas:[]});
+  document.getElementById('ch-pesan').value='';
+  a.innerHTML='<div class="alert ok">Pertanyaan terkirim. Dokter akan membalas di riwayat konsultasi di bawah.</div>';
+  simpan();
+}
+function loginDokter(){
+  const n=document.getElementById('dk-nama').value.trim();
+  const s=document.getElementById('dk-sandi').value;
+  const a=document.getElementById('chatAlert');
+  if(!n){ a.innerHTML='<div class="alert err">Isi nama dokter atau petugas.</div>'; return; }
+  if(s!==KUNCI_DOKTER){ a.innerHTML='<div class="alert err">Kata sandi salah. Kata sandi demo: respira2026</div>'; return; }
+  dokter=n;
+  document.getElementById('dokterJudul').textContent='Masuk sebagai '+n;
+  document.getElementById('dokterKet').textContent='Anda dapat membalas pertanyaan di riwayat konsultasi. Balasan ditambahkan, tidak menimpa pesan sebelumnya.';
+  document.getElementById('dokterForm').innerHTML='<button class="btn ghost kecil" onclick="keluarDokter()">Keluar</button>';
+  a.innerHTML='<div class="alert ok">Berhasil masuk. Kotak balasan sekarang muncul di setiap pertanyaan.</div>';
+  renderChat();
+}
+function keluarDokter(){
+  dokter=null;
+  document.getElementById('dokterJudul').textContent='Masuk sebagai dokter';
+  document.getElementById('dokterKet').textContent='Petugas kesehatan masuk untuk membalas pertanyaan yang belum terjawab.';
+  document.getElementById('dokterForm').innerHTML=`
+    <div class="field" style="margin-bottom:10px"><label for="dk-nama">Nama dokter / petugas</label><input id="dk-nama" placeholder="dr. Nama Anda"></div>
+    <div class="field" style="margin-bottom:10px"><label for="dk-sandi">Kata sandi</label><input id="dk-sandi" type="password" placeholder="respira2026"></div>
+    <button class="btn biru kecil" onclick="loginDokter()">Masuk</button>`;
+  renderChat();
+}
+function balas(id){
+  const box=document.getElementById('rb-'+id);
+  const pesan=box.value.trim();
+  if(!pesan||!dokter) return;
+  const t=db.chat.find(c=>c.id===id);
+  t.balas.push({oleh:dokter,pesan,waktu:Date.now()});
+  simpan();
+}
+function renderChat(){
+  const cari=(document.getElementById('cariChat').value||'').toLowerCase();
+  const list=[...db.chat].sort((a,b)=>b.waktu-a.waktu).filter(c=>
+    !cari || c.pesan.toLowerCase().includes(cari) || c.nama.toLowerCase().includes(cari) ||
+    c.balas.some(b=>b.pesan.toLowerCase().includes(cari)));
+  const el=document.getElementById('chatList');
+  if(!list.length){ el.innerHTML='<div class="note">Tidak ada konsultasi yang cocok dengan pencarian. Coba kata kunci lain, misalnya "batuk" atau "masker".</div>'; return; }
+  el.innerHTML=list.map(c=>`
+    <div class="thread">
+      <div class="thread-head">
+        <div><div class="who">${esc(c.nama)}</div><div class="muted" style="font-size:.8rem">${esc(namaPosko(c.poskoId))} · ${waktuTeks(c.waktu)}</div></div>
+        <span class="pill ${c.balas.length?'done':''}">${c.balas.length?'Sudah dijawab':'Menunggu jawaban'}</span>
+      </div>
+      <div class="bubble tanya"><div class="meta">Pertanyaan</div>${esc(c.pesan)}</div>
+      ${c.balas.map(b=>`<div class="bubble jawab"><div class="meta">${esc(b.oleh)} · ${waktuTeks(b.waktu)}</div>${esc(b.pesan)}</div>`).join('')}
+      ${dokter?`<div class="reply-box on">
+        <textarea id="rb-${c.id}" placeholder="Tulis balasan untuk ${esc(c.nama)}" style="min-height:80px"></textarea>
+        <button class="btn kecil" style="margin-top:8px" onclick="balas('${c.id}')">Kirim balasan</button></div>`:''}
+    </div>`).join('');
+}
+
+/* ===================== GAME: LARI ANTARPOSKO ===================== */
+const SOAL = [
+  {t:'ISPA menyerang bagian tubuh yang mana?',o:['Saluran pernapasan','Saluran pencernaan','Persendian'],b:0,
+   e:'ISPA adalah infeksi pada saluran pernapasan, mulai dari hidung sampai paru-paru.'},
+  {t:'Berapa lama ISPA umumnya berlangsung?',o:['Kurang dari 14 hari','Sekitar 3 bulan','Seumur hidup'],b:0,
+   e:'ISPA bersifat akut, umumnya sembuh dalam kurang dari 14 hari.'},
+  {t:'ISPA paling sering menular lewat apa?',o:['Percikan napas saat batuk atau bersin','Gigitan nyamuk','Air minum kemasan'],b:0,
+   e:'Penularan utama lewat percikan napas, karena itu masker dan jarak sangat membantu.'},
+  {t:'Gejala mana yang menandakan kondisi berat dan harus segera dibawa ke petugas?',o:['Sesak napas','Pilek ringan','Bersin sekali dua kali'],b:0,
+   e:'Sesak napas, napas cepat pada anak, atau bibir membiru adalah tanda bahaya.'},
+  {t:'Di posko, kapan sebaiknya ventilasi tenda dibuka?',o:['Setiap pagi agar udara berganti','Hanya saat hujan','Tidak perlu dibuka'],b:0,
+   e:'Udara yang berganti menurunkan kepadatan kuman di dalam tenda.'},
+  {t:'Masker kain sebaiknya diganti setelah berapa lama?',o:['Sekitar 4 jam atau saat sudah lembap','Tiga hari sekali','Sebulan sekali'],b:0,
+   e:'Masker yang lembap kehilangan fungsi dan justru menjadi sarang kuman.'},
+  {t:'Kelompok mana yang paling rentan terkena ISPA berat di pengungsian?',o:['Balita dan lansia','Remaja sehat','Petugas dapur umum'],b:0,
+   e:'Balita dan lansia punya daya tahan lebih lemah, karena itu skrining memberi skor tambahan.'},
+  {t:'Kapan waktu paling penting untuk mencuci tangan dengan sabun?',o:['Sebelum makan dan setelah batuk','Hanya sebelum tidur','Hanya saat tangan terlihat kotor'],b:0,
+   e:'Kuman berpindah lewat tangan, bahkan ketika tangan tampak bersih.'},
+  {t:'Apa yang memperburuk ISPA di lokasi pengungsian?',o:['Debu dan asap dapur umum','Sinar matahari pagi','Minum air hangat'],b:0,
+   e:'Debu pascabencana dan asap mengiritasi saluran napas yang sedang meradang.'},
+  {t:'Anggota keluarga batuk terus-menerus. Apa langkah pertama di posko?',o:['Pakaikan masker dan beri jarak tidur, lalu lapor petugas','Diamkan sampai sembuh sendiri','Pindahkan ke tenda paling padat'],b:0,
+   e:'Memutus penularan dan melapor lebih awal mencegah wabah di dalam posko.'}
+];
+let gIdx=0, gBenar=0, gNyawa=3, gJalan=false;
+
+function acakOpsi(s){
+  const pasang = s.o.map((t,i)=>({t,benar:i===s.b}));
+  for(let i=pasang.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pasang[i],pasang[j]]=[pasang[j],pasang[i]]; }
+  return pasang;
+}
+function gambarPosko(){
+  const el=document.getElementById('gPosko'); if(!el) return;
+  el.innerHTML = Array.from({length:10},(_,i)=>{
+    const kiri = 2 + (i+1)*(96/10);
+    return `<div class="pos ${i<gIdx?'lewat':''} ${i===9?'akhir':''}" style="left:${kiri}%">${i===9?'🏥':'⛺'}<small>${i+1}</small></div>`;
+  }).join('');
+  const pel=document.getElementById('gPelari');
+  pel.style.left = (2 + gIdx*(96/10)) + '%';
+  document.getElementById('gPosisi').textContent = `Posko ${gIdx} dari 10`;
+  document.getElementById('gBenar').textContent = `Benar ${gBenar}`;
+  document.getElementById('gNyawa').textContent = '❤️'.repeat(gNyawa) + '🤍'.repeat(3-gNyawa);
+}
+function mulaiGame(){ gIdx=0; gBenar=0; gNyawa=3; gJalan=true; gambarPosko(); soalBerikut(); }
+function soalBerikut(){
+  const isi=document.getElementById('gIsi');
+  if(gIdx>=10){ return selesaiGame(true); }
+  const s=SOAL[gIdx], pasang=acakOpsi(s);
+  isi.innerHTML = `
+    <div class="eyebrow">Posko ${gIdx+1}</div>
+    <h3 style="margin:8px 0 2px;font-size:1.15rem">${esc(s.t)}</h3>
+    <div class="opsi" id="gOpsi">
+      ${pasang.map((o,i)=>`<button onclick="jawabGame(this,${o.benar})">${esc(o.t)}</button>`).join('')}
+    </div>
+    <div id="gUmpan" style="margin-top:12px"></div>`;
+}
+function jawabGame(btn, benar){
+  if(!gJalan) return;
+  const tombol=[...document.querySelectorAll('#gOpsi button')];
+  tombol.forEach(b=>b.disabled=true);
+  const s=SOAL[gIdx];
+  const umpan=document.getElementById('gUmpan');
+  if(benar){
+    btn.classList.add('benar'); gBenar++; gIdx++;
+    umpan.innerHTML = `<div class="alert ok">Benar. ${esc(s.e)}</div>`;
+    const pel=document.getElementById('gPelari');
+    pel.classList.add('lari'); setTimeout(()=>pel.classList.remove('lari'),700);
+    gambarPosko();
+    setTimeout(()=>{ if(gIdx>=10) selesaiGame(true); else soalBerikut(); }, 1400);
+  }else{
+    btn.classList.add('salah');
+    tombol.forEach(b=>{ if(b!==btn && b.textContent===s.o[s.b]) b.classList.add('benar'); });
+    gNyawa--;
+    gambarPosko();
+    umpan.innerHTML = `<div class="alert err">Belum tepat. ${esc(s.e)}</div>`;
+    if(gNyawa<=0){ setTimeout(()=>selesaiGame(false), 1600); }
+    else setTimeout(()=>{ soalBerikut(); }, 1800);
+  }
+}
+function selesaiGame(menang){
+  gJalan=false;
+  document.getElementById('gIsi').innerHTML = menang
+    ? `<h3 style="font-size:1.2rem">Sampai di pos kesehatan 🏥</h3>
+       <p class="muted">Pelari melewati sepuluh posko dengan ${gBenar} jawaban benar dan sisa ${gNyawa} nyawa.</p>
+       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+         <button class="btn" onclick="mulaiGame()">Main lagi</button>
+         <button class="btn ghost" onclick="go('skrining')">Isi skrining ISPA</button>
+       </div>`
+    : `<h3 style="font-size:1.2rem">Pelari berhenti di posko ${gIdx}</h3>
+       <p class="muted">Nyawa habis dengan ${gBenar} jawaban benar. Baca ulang halaman edukasi, lalu coba lagi.</p>
+       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+         <button class="btn" onclick="mulaiGame()">Ulangi</button>
+         <button class="btn ghost" onclick="go('edukasi')">Buka edukasi</button>
+       </div>`;
+  gambarPosko();
+}
+
+muat();
+</script>
+</body>
+</html>
